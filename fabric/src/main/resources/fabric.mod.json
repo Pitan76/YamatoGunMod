@@ -1,28 +1,35 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "ygm76",
   "version": "${version}",
   "name": "${mod_name}",
   "description": "",
   "authors": [
-    "Pitan"
+    "Pitan76"
   ],
-  "contact": {},
+  "contact": {
+    "website": "https://www.curseforge.com/minecraft/mc-mods/yamato-gun-mod",
+    "repo": "https://github.com/Pitan76/YamatoGunMod",
+    "issues": "https://github.com/Pitan76/YamatoGunMod/issues"
+  },
   "license": "MIT",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ml.pkom.examplemod.fabric.ExampleModFabric"
+      "ml.pkom.ygm76.fabric.YamatoGunModFabric"
+    ],
+    "client": [
+      "ml.pkom.ygm76.fabric.YamatoGunModClientFabric"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json",
-    "examplemod-common.mixins.json"
+    "ygm76.mixins.json",
+    "ygm76-common.mixins.json"
   ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": ">=1.17",
-    "mcpitanlibarch": ">=${mcpitanlib_version}"
+    "minecraft": ">=1.16",
+    "mcpitanlibarch": ">=1.6.9"
   }
 }
