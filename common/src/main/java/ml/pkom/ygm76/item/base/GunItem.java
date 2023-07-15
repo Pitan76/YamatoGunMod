@@ -9,8 +9,6 @@ import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
 import ml.pkom.ygm76.entity.BulletEntity;
 import ml.pkom.ygm76.item.YGItems;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -19,7 +17,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -51,6 +48,14 @@ public abstract class GunItem extends ExtendItem {
 
     public float getShootDamage() {
         return 1f;
+    }
+
+    public float getShootDivergence() {
+        return 1f;
+    }
+
+    public float getShootRoll() {
+        return 0f;
     }
 
     public static int getBulletCount(ItemStack stack) {
@@ -141,7 +146,7 @@ public abstract class GunItem extends ExtendItem {
         $world.playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / ($world.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!$world.isClient) {
             BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
-            bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), 0.0F, getShootSpeed(), 1.0F);
+            bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
             decreaseBulletCount($stack);
             $world.spawnEntity(bulletEntity);
         }
