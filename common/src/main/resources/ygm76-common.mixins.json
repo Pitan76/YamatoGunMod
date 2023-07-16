@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "ml.pkom.ygm76.mixin.forge",
+  "package": "ml.pkom.ygm76.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ServerTimer"
   ],
   "client": [
   ],

@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 public class BulletEntity extends ThrownItemEntity {
 
     public GunItem item;
+    public float addedDamage = 0f;
 
     public BulletEntity(World world, LivingEntity owner, GunItem item) {
         super((EntityType<? extends ThrownItemEntity>) YGEntityType.BULLET_ENTITY.get(), owner, world);
@@ -49,7 +50,15 @@ public class BulletEntity extends ThrownItemEntity {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
         if (item == null) return;
-        entity.damage(DamageSource.thrownProjectile(this, this.getOwner()), item.getShootDamage());
+        entity.damage(DamageSource.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
+    }
+
+    public float getAddedDamage() {
+        return addedDamage;
+    }
+
+    public void setAddedDamage(float addedDamage) {
+        this.addedDamage = addedDamage;
     }
 
     protected void onCollision(HitResult hitResult) {

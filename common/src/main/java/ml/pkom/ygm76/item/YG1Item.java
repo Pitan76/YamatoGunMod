@@ -20,11 +20,31 @@ public class YG1Item extends GunItem {
 
     @Override
     public float getShootDamage() {
-        return 1f;
+        return 3f;
+    }
+
+    @Override
+    public float getRightShootDamage() {
+        return 5f;
     }
 
     @Override
     public int getShootTick() {
-        return 5;
+        return 10;
+    }
+
+    @Override
+    public float getShootRoll() {
+        return super.getShootRoll();
+    }
+
+    @Override
+    public float getShootSpeed() {
+        return super.getShootSpeed();
+    }
+
+    @Override
+    public float getShootDivergence() {
+        return super.getShootDivergence();
     }
 }

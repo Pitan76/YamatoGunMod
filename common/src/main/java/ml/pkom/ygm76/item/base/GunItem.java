@@ -1,33 +1,31 @@
 package ml.pkom.ygm76.item.base;
 
-import dev.architectury.event.EventResult;
 import ml.pkom.mcpitanlibarch.api.entity.Player;
 import ml.pkom.mcpitanlibarch.api.event.item.ItemUseEvent;
-import ml.pkom.mcpitanlibarch.api.event.v0.AttackEntityEventRegistry;
 import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
 import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
 import ml.pkom.ygm76.entity.BulletEntity;
 import ml.pkom.ygm76.item.YGItems;
-import net.minecraft.entity.Entity;
+import ml.pkom.ygm76.timer.ServerTimerAccess;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public abstract class GunItem extends ExtendItem {
     public GunItem(CompatibleItemSettings settings) {
         super(settings);
-        AttackEntityEventRegistry.register((this::onLeftClick));
     }
 
     public int getMaxBulletCount() {
@@ -39,7 +37,7 @@ public abstract class GunItem extends ExtendItem {
     }
 
     public float getShootSpeed() {
-        return 1.5f;
+        return 5f;
     }
 
     public int getReloadTick() {
@@ -48,6 +46,10 @@ public abstract class GunItem extends ExtendItem {
 
     public float getShootDamage() {
         return 1f;
+    }
+
+    public float getRightShootDamage() {
+        return 5f;
     }
 
     public float getShootDivergence() {
@@ -91,16 +93,33 @@ public abstract class GunItem extends ExtendItem {
         return getBulletCount(stack) == 0;
     }
 
-    public EventResult onLeftClick(Player player, World world, Entity target, Hand hand, EntityHitResult result) {
-        return EventResult.interruptFalse();
-    }
-
     public Item getBulletItem() {
         return YGItems.BULLET_ITEM.get();
     }
 
+    public void playSoundWithTimer(Player player, SoundEvent event, float volume, float pitch, int ticks) {
+        if (player.getWorld().isClient) return;
+        ((ServerTimerAccess) player.getWorld()).ymg76_setTimer(ticks, () -> {
+            BlockPos $pos = player.getBlockPos();
+            player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), event, SoundCategory.NEUTRAL, volume, pitch);
+            return true;
+        });
+    }
+
+    public void playSoundOnReload(Player player) {
+        playSoundWithTimer(player, SoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 4);
+        playSoundWithTimer(player, SoundEvents.BLOCK_IRON_DOOR_OPEN, 1, 2, 6);
+        playSoundWithTimer(player, SoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 16);
+        playSoundWithTimer(player, SoundEvents.ENTITY_PLAYER_HURT, 1, 0, 17);
+        playSoundWithTimer(player, SoundEvents.BLOCK_IRON_DOOR_CLOSE, 1, 2, getReloadTick());
+    }
+
     public void reload(ItemStack stack, Player player) {
+        if (getMaxBulletCount() == getBulletCount(stack)) return;
+
         if (player.getInventory().contains(new ItemStack(getBulletItem()))) {
+            playSoundOnReload(player);
+
             player.getEntity().getItemCooldownManager().set(this, getReloadTick());
             int $bulletCount = 0;
             List<ItemStack> $bulletList = new ArrayList<>();
@@ -116,7 +135,7 @@ public abstract class GunItem extends ExtendItem {
                 }
             }
 
-            int $usableCount = Math.min(getMaxBulletCount(), $bulletCount);
+            int $usableCount = Math.min(getMaxBulletCount() - getBulletCount(stack), $bulletCount);
             int $c = $usableCount;
 
             for (ItemStack $invStack : $bulletList) {
@@ -128,6 +147,27 @@ public abstract class GunItem extends ExtendItem {
 
             increaseBulletCount(stack, $usableCount);
         }
+    }
+
+    public void onLeftClick(Player $user, Hand hand) {
+        ItemStack $stack = $user.getStackInHand(hand);
+
+        if (!($stack.getItem().equals(this))) return;
+        BlockPos $pos = $user.getBlockPos();
+
+        World $world = $user.getWorld();
+
+        if (isBulletCountEmpty($stack)) {
+            reload($stack, $user);
+            return;
+        }
+
+        $world.playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / ($world.getRandom().nextFloat() * 0.4F + 0.8F));
+        if (!$world.isClient) {
+            shoot($user, $stack);
+        }
+
+        $user.getEntity().incrementStat(Stats.USED.getOrCreateStat(this));
     }
 
     @Override
@@ -145,15 +185,36 @@ public abstract class GunItem extends ExtendItem {
 
         $world.playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / ($world.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!$world.isClient) {
-            BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
-            bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
-            decreaseBulletCount($stack);
-            $world.spawnEntity(bulletEntity);
+            shootRight($user, $stack);
         }
 
         $user.getEntity().incrementStat(Stats.USED.getOrCreateStat(this));
 
         return TypedActionResult.success($stack, false);
+    }
+
+    public boolean isEnabledRightShoot() {
+        return true;
+    }
+
+    public void shoot(Player $user, ItemStack $stack) {
+        World $world = $user.getWorld();
+
+        BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
+        bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
+        decreaseBulletCount($stack);
+        $world.spawnEntity(bulletEntity);
+    }
+
+    public void shootRight(Player $user, ItemStack $stack) {
+        if (!isEnabledRightShoot()) return;
+        World $world = $user.getWorld();
+
+        BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
+        bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
+        bulletEntity.setAddedDamage(getRightShootDamage());
+        decreaseBulletCount($stack);
+        $world.spawnEntity(bulletEntity);
     }
 
     @Override

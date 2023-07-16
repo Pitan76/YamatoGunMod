@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#c ",
+    "iiF",
+    "  /"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bow"
+    },
+    "c": {
+      "item": "minecraft:copper_ingot"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "F": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "/": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "ygm76:yg1",
+    "count": 1
+  }
+}
