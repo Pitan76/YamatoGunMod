@@ -21,6 +21,8 @@ public class YamatoGunMod {
 
     @SuppressWarnings("PatternVariableCanBeUsed")
     public static void init() {
+        registry.registerItemGroup(id("guns"), () -> GUN_GROUP);
+
         YGEntityType.init();
         YGItems.init();
 
