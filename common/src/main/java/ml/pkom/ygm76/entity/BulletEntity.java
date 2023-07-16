@@ -65,7 +65,9 @@ public class BulletEntity extends ThrownItemEntity {
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             this.getWorld().sendEntityStatus(this, (byte)3);
-            this.discard();
+            try {
+                this.discard();
+            } catch (ArrayIndexOutOfBoundsException ignore) {}
         }
     }
 
