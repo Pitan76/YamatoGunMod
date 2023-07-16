@@ -30,6 +30,6 @@
   "depends": {
     "fabricloader": "*",
     "minecraft": ">=1.16",
-    "mcpitanlibarch": ">=1.6.9"
+    "mcpitanlibarch": ">=1.7.0"
   }
 }
