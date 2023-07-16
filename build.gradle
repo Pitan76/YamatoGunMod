@@ -37,7 +37,7 @@ subprojects {
         modApi "ml.pkom:mcpitanlibarch-common+${rootProject.mcpitanlib_version}"
     }
 
-    /*
+
     if (name in "fabric,forge".split(",")) {
         var modLoader = name
 
@@ -45,7 +45,7 @@ subprojects {
             curseforge {
                 apiKey = System.getenv("CURSEFORGE_TOKEN")
                 project {
-                    id = ''
+                    id = '889487'
                     changelog = rootProject.changelog
                     if (modLoader == "fabric") {
                         releaseType = 'release'
@@ -83,7 +83,7 @@ subprojects {
         if (System.getenv("MODRINTH_TOKEN") != null) {
             modrinth {
                 token = System.getenv("MODRINTH_TOKEN")
-                projectId = ''
+                projectId = 'WZoCbc26'
                 versionNumber = project.mod_version + "-" + modLoader
                 gameVersions = ['1.18.1', '1.18.2', '1.19', '1.19.1', '1.19.2', '1.19.3', '1.20', '1.20.1']
                 versionType = 'release'
@@ -94,13 +94,11 @@ subprojects {
                     if (modLoader == "fabric") {
                         required.project "P7dR8mSH" // Fabric API
                     }
-                    required.project "uNRoUnGT" // MCPitanLibarch
+                    required.project "uNRoUnGT" // MCPitanLib
                 }
             }
         }
     }
-     */
-
 }
 
 allprojects {

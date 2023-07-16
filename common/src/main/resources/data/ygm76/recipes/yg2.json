@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " g",
+    "cyc",
+    " g "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:copper_ingot"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "y": {
+      "item": "ygm76:yg1"
+    }
+  },
+  "result": {
+    "item": "ygm76:yg2",
+    "count": 1
+  }
+}
