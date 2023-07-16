@@ -1,11 +1,12 @@
 package ml.pkom.ygm76.entity;
 
+import ml.pkom.mcpitanlibarch.api.util.DamageSourceUtil;
+import ml.pkom.mcpitanlibarch.api.util.EntityUtil;
 import ml.pkom.ygm76.item.YGItems;
 import ml.pkom.ygm76.item.base.GunItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,7 +41,7 @@ public class BulletEntity extends ThrownItemEntity {
             ParticleEffect particleEffect = this.getParticleParameters();
 
             for(int i = 0; i < 8; ++i) {
-                this.world.addParticle(particleEffect, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
+                EntityUtil.getWorld(this).addParticle(particleEffect, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
             }
         }
 
@@ -50,7 +51,8 @@ public class BulletEntity extends ThrownItemEntity {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
         if (item == null) return;
-        entity.damage(DamageSource.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
+        DamageSourceUtil damageSourceUtil = new DamageSourceUtil();
+        entity.damage(damageSourceUtil.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
     }
 
     public float getAddedDamage() {

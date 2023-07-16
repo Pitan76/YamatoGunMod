@@ -120,7 +120,7 @@ public abstract class GunItem extends ExtendItem {
         if (player.getInventory().contains(new ItemStack(getBulletItem()))) {
             playSoundOnReload(player);
 
-            player.getEntity().getItemCooldownManager().set(this, getReloadTick());
+            player.itemCooldown.set(this, getReloadTick());
             int $bulletCount = 0;
             List<ItemStack> $bulletList = new ArrayList<>();
 
@@ -167,7 +167,7 @@ public abstract class GunItem extends ExtendItem {
             shoot($user, $stack);
         }
 
-        $user.getEntity().incrementStat(Stats.USED.getOrCreateStat(this));
+        $user.incrementStat(Stats.USED, this);
     }
 
     @Override
@@ -188,7 +188,7 @@ public abstract class GunItem extends ExtendItem {
             shootRight($user, $stack);
         }
 
-        $user.getEntity().incrementStat(Stats.USED.getOrCreateStat(this));
+        $user.incrementStat(Stats.USED, this);
 
         return TypedActionResult.success($stack, false);
     }
@@ -224,6 +224,6 @@ public abstract class GunItem extends ExtendItem {
 
     @Override
     public boolean isItemBarVisible(ItemStack stack) {
-        return true;
+        return stack.hasNbt();
     }
 }
