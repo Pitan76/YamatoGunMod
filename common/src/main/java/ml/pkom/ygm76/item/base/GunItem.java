@@ -4,12 +4,13 @@ import ml.pkom.mcpitanlibarch.api.entity.Player;
 import ml.pkom.mcpitanlibarch.api.event.item.ItemUseEvent;
 import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
 import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
+import ml.pkom.mcpitanlibarch.api.util.TimerUtil;
 import ml.pkom.ygm76.entity.BulletEntity;
 import ml.pkom.ygm76.item.YGItems;
-import ml.pkom.ygm76.timer.ServerTimerAccess;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -99,7 +100,7 @@ public abstract class GunItem extends ExtendItem {
 
     public void playSoundWithTimer(Player player, SoundEvent event, float volume, float pitch, int ticks) {
         if (player.getWorld().isClient) return;
-        ((ServerTimerAccess) player.getWorld()).ymg76_setTimer(ticks, () -> {
+        TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
             BlockPos $pos = player.getBlockPos();
             player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), event, SoundCategory.NEUTRAL, volume, pitch);
             return true;

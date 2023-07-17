@@ -51,8 +51,7 @@ public class BulletEntity extends ThrownItemEntity {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
         if (item == null) return;
-        DamageSourceUtil damageSourceUtil = new DamageSourceUtil();
-        entity.damage(damageSourceUtil.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
+        entity.damage(DamageSourceUtil.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
     }
 
     public float getAddedDamage() {

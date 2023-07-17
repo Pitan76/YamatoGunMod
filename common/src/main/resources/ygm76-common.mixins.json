@@ -4,7 +4,6 @@
   "package": "ml.pkom.ygm76.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ServerTimer"
   ],
   "client": [
   ],

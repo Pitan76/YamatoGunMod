@@ -47,6 +47,8 @@ public class YamatoGunMod {
                 item.reload(stack, player);
             }
         }));
+
+        registry.allRegister();
     }
 
     public static Identifier id(String name) {
