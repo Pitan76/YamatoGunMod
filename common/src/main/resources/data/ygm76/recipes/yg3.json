@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " d ",
+    "iyi",
+    " d "
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "y": {
+      "item": "ygm76:yg2"
+    }
+  },
+  "result": {
+    "item": "ygm76:yg3",
+    "count": 1
+  }
+}

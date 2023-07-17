@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " ig",
+    "iyi",
+    "gi "
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "y": {
+      "item": "ygm76:yg1"
+    }
+  },
+  "result": {
+    "item": "ygm76:sakai_gun",
+    "count": 1
+  }
+}

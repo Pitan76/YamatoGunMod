@@ -150,11 +150,22 @@ public abstract class GunItem extends ExtendItem {
         }
     }
 
+    public void playSoundOnShoot(Player player) {
+        if (player.isClient()) return;
+        BlockPos $pos = player.getBlockPos();
+        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (player.getWorld().getRandom().nextFloat() * 0.4F + 0.8F));
+    }
+
+    public void playSoundOnRightShoot(Player player) {
+        if (player.isClient()) return;
+        BlockPos $pos = player.getBlockPos();
+        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (player.getWorld().getRandom().nextFloat() * 0.4F + 0.8F));
+    }
+
     public void onLeftClick(Player $user, Hand hand) {
         ItemStack $stack = $user.getStackInHand(hand);
 
         if (!($stack.getItem().equals(this))) return;
-        BlockPos $pos = $user.getBlockPos();
 
         World $world = $user.getWorld();
 
@@ -163,8 +174,31 @@ public abstract class GunItem extends ExtendItem {
             return;
         }
 
-        $world.playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / ($world.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!$world.isClient) {
+            NbtCompound nbt = new NbtCompound();
+            if ($stack.hasNbt()) {
+
+                nbt = $stack.getNbt();
+                if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return;
+            }
+
+            nbt.putBoolean("canUse", false);
+
+            int $c = $stack.getCount();
+            $stack.setCount(0);
+            $stack.setNbt(nbt);
+            $stack.setCount($c);
+
+            TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
+                NbtCompound nbt2 = $stack.getNbt();
+                nbt2.putBoolean("canUse", true);
+                $stack.setCount(0);
+                $stack.setNbt(nbt2);
+                $stack.setCount($c);
+                return true;
+            });
+
+            playSoundOnShoot($user);
             shoot($user, $stack);
         }
 
@@ -175,17 +209,40 @@ public abstract class GunItem extends ExtendItem {
     public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
         Player $user = event.user;
         World $world = event.world;
-        BlockPos $pos = event.user.getBlockPos();
 
         ItemStack $stack = $user.getStackInHand(event.hand);
+        if (!isEnabledRightShoot()) return TypedActionResult.fail($stack);
 
         if (isBulletCountEmpty($stack)) {
             reload($stack, $user);
             return TypedActionResult.fail($stack);
         }
 
-        $world.playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / ($world.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!$world.isClient) {
+            NbtCompound nbt = new NbtCompound();
+            if ($stack.hasNbt()) {
+                nbt = $stack.getNbt();
+                if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return TypedActionResult.fail($stack);
+            }
+
+            nbt.putBoolean("canUse", false);
+
+            int $c = $stack.getCount();
+            $stack.setCount(0);
+            $stack.setNbt(nbt);
+            $stack.setCount($c);
+
+            TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
+                NbtCompound nbt2 = $stack.getNbt();
+                nbt2.putBoolean("canUse", true);
+                $stack.setCount(0);
+                $stack.setNbt(nbt2);
+                $stack.setCount($c);
+                return true;
+            });
+
+            playSoundOnRightShoot($user);
+
             shootRight($user, $stack);
         }
 
