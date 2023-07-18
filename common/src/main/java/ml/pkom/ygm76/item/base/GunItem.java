@@ -5,6 +5,7 @@ import ml.pkom.mcpitanlibarch.api.event.item.ItemUseEvent;
 import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
 import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
 import ml.pkom.mcpitanlibarch.api.util.TimerUtil;
+import ml.pkom.mcpitanlibarch.api.util.WorldRandomUtil;
 import ml.pkom.ygm76.entity.BulletEntity;
 import ml.pkom.ygm76.item.YGItems;
 import net.minecraft.item.Item;
@@ -153,13 +154,13 @@ public abstract class GunItem extends ExtendItem {
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (player.getWorld().getRandom().nextFloat() * 0.4F + 0.8F));
+        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void playSoundOnRightShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (player.getWorld().getRandom().nextFloat() * 0.4F + 0.8F));
+        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void onLeftClick(Player $user, Hand hand) {
