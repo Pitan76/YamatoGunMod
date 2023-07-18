@@ -1,7 +1,7 @@
 package ml.pkom.ygm76.entity;
 
-import ml.pkom.mcpitanlibarch.api.util.DamageSourceUtil;
 import ml.pkom.mcpitanlibarch.api.util.EntityUtil;
+import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
 import ml.pkom.ygm76.item.YGItems;
 import ml.pkom.ygm76.item.base.GunItem;
 import net.minecraft.entity.Entity;
@@ -51,7 +51,7 @@ public class BulletEntity extends ThrownItemEntity {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
         if (item == null) return;
-        entity.damage(DamageSourceUtil.thrownProjectile(this, this.getOwner()), item.getShootDamage() + getAddedDamage());
+        EntityUtil.damageWithThrownProjectile(entity, item.getShootDamage() + getAddedDamage(), this, this.getOwner());
     }
 
     public float getAddedDamage() {
@@ -64,8 +64,9 @@ public class BulletEntity extends ThrownItemEntity {
 
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
-        if (!EntityUtil.getWorld(this).isClient()) {
-            EntityUtil.getWorld(this).sendEntityStatus(this, (byte)3);
+        World world = EntityUtil.getWorld(this);
+        if (world != null && !WorldUtil.isClient(world)) {
+            WorldUtil.sendEntityStatus(world, this, (byte)3);
             try {
                 this.discard();
             } catch (ArrayIndexOutOfBoundsException ignore) {}

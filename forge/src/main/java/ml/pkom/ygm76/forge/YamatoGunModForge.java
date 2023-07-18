@@ -14,8 +14,8 @@ public class YamatoGunModForge {
         YamatoGunMod.init();
 
         if (PlatformUtil.isClient()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(YamatoGunForgeClientMod::clientInit);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(YamatoGunForgeClientMod::renderInit);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(YamatoGunForgeClientMod::clientInit);
         }
     }
 }
