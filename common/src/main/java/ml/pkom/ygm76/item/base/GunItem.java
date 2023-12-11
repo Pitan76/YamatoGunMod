@@ -6,6 +6,8 @@ import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
 import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
 import ml.pkom.mcpitanlibarch.api.util.TimerUtil;
 import ml.pkom.mcpitanlibarch.api.util.WorldRandomUtil;
+import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
+import ml.pkom.mcpitanlibarch.api.util.math.PosUtil;
 import ml.pkom.ygm76.entity.BulletEntity;
 import ml.pkom.ygm76.item.YGItems;
 import net.minecraft.item.Item;
@@ -103,7 +105,7 @@ public abstract class GunItem extends ExtendItem {
         if (player.getWorld().isClient) return;
         TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
             BlockPos $pos = player.getBlockPos();
-            player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), event, SoundCategory.NEUTRAL, volume, pitch);
+            WorldUtil.playSound(player.getWorld(), null, PosUtil.flooredBlockPos($pos.getX(), $pos.getY(), $pos.getZ()), event, SoundCategory.NEUTRAL, volume, pitch);
             return true;
         });
     }
@@ -154,13 +156,13 @@ public abstract class GunItem extends ExtendItem {
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void playSoundOnRightShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void onLeftClick(Player $user, Hand hand) {

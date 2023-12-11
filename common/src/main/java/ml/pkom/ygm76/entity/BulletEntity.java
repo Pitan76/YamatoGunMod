@@ -21,10 +21,12 @@ public class BulletEntity extends ThrownItemEntity {
 
     public GunItem item;
     public float addedDamage = 0f;
+    public LivingEntity owner;
 
     public BulletEntity(World world, LivingEntity owner, GunItem item) {
         super((EntityType<? extends ThrownItemEntity>) YGEntityType.BULLET_ENTITY.get(), owner, world);
         this.item = item;
+        this.owner = owner;
     }
 
     public BulletEntity(EntityType<?> entityType, World world) {
@@ -51,7 +53,7 @@ public class BulletEntity extends ThrownItemEntity {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
         if (item == null) return;
-        EntityUtil.damageWithThrownProjectile(entity, item.getShootDamage() + getAddedDamage(), this, this.getOwner());
+        EntityUtil.damageWithThrownProjectile(entity, item.getShootDamage() + getAddedDamage(), this, this.owner == null ? this : this.owner);
     }
 
     public float getAddedDamage() {

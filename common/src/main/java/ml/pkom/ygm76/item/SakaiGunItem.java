@@ -2,6 +2,7 @@ package ml.pkom.ygm76.item;
 
 import ml.pkom.mcpitanlibarch.api.entity.Player;
 import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
+import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
 import ml.pkom.ygm76.item.base.GunItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -16,9 +17,9 @@ public class SakaiGunItem extends GunItem {
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.5f);
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 2f);
-        player.getWorld().playSound(null, $pos.getX(), $pos.getY(), $pos.getZ(), SoundEvents.BLOCK_ANVIL_FALL, SoundCategory.NEUTRAL, 0.5F, 2f);
+        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.5f);
+        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 2f);
+        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.BLOCK_ANVIL_FALL, SoundCategory.NEUTRAL, 0.5F, 2f);
     }
 
     @Override
