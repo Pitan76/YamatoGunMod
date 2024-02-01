@@ -2,5 +2,17 @@
   "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "ygm76:item/yg3"
+  },
+  "display": {
+    "thirdperson_lefthand": {
+      "rotation": [0, 100, -35],
+      "translation": [0, 3.2, 1.5],
+      "scale": [0.65, 0.65, 0.65]
+    },
+    "thirdperson_righthand": {
+      "rotation": [0, -80, 35],
+      "translation": [0, 3.2, 1.5],
+      "scale": [0.65, 0.65, 0.65]
+    }
   }
 }
