@@ -1,12 +1,12 @@
-package ml.pkom.ygm76;
+package net.pitan76.ygm76;
 
 import dev.architectury.event.events.common.InteractionEvent;
-import ml.pkom.mcpitanlibarch.api.client.registry.ArchRegistryClient;
-import ml.pkom.mcpitanlibarch.api.client.registry.KeybindingRegistry;
-import ml.pkom.mcpitanlibarch.api.network.ClientNetworking;
-import ml.pkom.mcpitanlibarch.api.network.PacketByteUtil;
-import ml.pkom.ygm76.entity.YGEntityType;
-import ml.pkom.ygm76.item.base.GunItem;
+import net.pitan76.mcpitanlib.api.client.registry.ArchRegistryClient;
+import net.pitan76.mcpitanlib.api.client.registry.KeybindingRegistry;
+import net.pitan76.mcpitanlib.api.network.ClientNetworking;
+import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
+import net.pitan76.ygm76.entity.YGEntityType;
+import net.pitan76.ygm76.item.base.GunItem;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;

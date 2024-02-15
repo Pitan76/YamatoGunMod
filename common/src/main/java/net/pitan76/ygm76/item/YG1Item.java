@@ -1,7 +1,7 @@
-package ml.pkom.ygm76.item;
+package net.pitan76.ygm76.item;
 
-import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
-import ml.pkom.ygm76.item.base.GunItem;
+import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.ygm76.item.base.GunItem;
 
 public class YG1Item extends GunItem {
     public YG1Item(CompatibleItemSettings settings) {

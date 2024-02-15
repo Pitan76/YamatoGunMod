@@ -1,9 +1,9 @@
-package ml.pkom.ygm76.entity;
+package net.pitan76.ygm76.entity;
 
-import ml.pkom.mcpitanlibarch.api.util.EntityUtil;
-import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
-import ml.pkom.ygm76.item.YGItems;
-import ml.pkom.ygm76.item.base.GunItem;
+import net.pitan76.mcpitanlib.api.util.EntityUtil;
+import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.ygm76.item.YGItems;
+import net.pitan76.ygm76.item.base.GunItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

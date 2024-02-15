@@ -1,6 +1,6 @@
-package ml.pkom.ygm76.fabric;
+package net.pitan76.ygm76.fabric;
 
-import ml.pkom.ygm76.YamatoGunMod;
+import net.pitan76.ygm76.YamatoGunMod;
 import net.fabricmc.api.ModInitializer;
 
 public class YamatoGunModFabric implements ModInitializer {

@@ -1,25 +1,25 @@
-package ml.pkom.ygm76.item;
+package net.pitan76.ygm76.item;
 
-import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 
-public class YG3Item extends YG2Item {
-    public YG3Item(CompatibleItemSettings settings) {
+public class YG2Item extends YG1Item {
+    public YG2Item(CompatibleItemSettings settings) {
         super(settings);
     }
 
     @Override
     public int getMaxBulletCount() {
-        return 60;
+        return 45;
     }
 
     @Override
     public float getShootDamage() {
-        return 10f;
+        return 5f;
     }
 
     @Override
     public float getRightShootDamage() {
-        return 15f;
+        return 8f;
     }
 
     @Override

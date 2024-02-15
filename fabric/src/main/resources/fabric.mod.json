@@ -13,14 +13,14 @@
     "issues": "https://github.com/Pitan76/YamatoGunMod/issues"
   },
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "assets/ygm76/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ml.pkom.ygm76.fabric.YamatoGunModFabric"
+      "net.pitan76.ygm76.fabric.YamatoGunModFabric"
     ],
     "client": [
-      "ml.pkom.ygm76.fabric.YamatoGunModClientFabric"
+      "net.pitan76.ygm76.fabric.YamatoGunModClientFabric"
     ]
   },
   "mixins": [
@@ -30,6 +30,6 @@
   "depends": {
     "fabricloader": "*",
     "minecraft": ">=1.16",
-    "mcpitanlibarch": ">=1.7.4"
+    "mcpitanlib": ">2.0.0"
   }
 }

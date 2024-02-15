@@ -1,8 +1,8 @@
-package ml.pkom.ygm76.forge;
+package net.pitan76.ygm76.forge;
 
 import dev.architectury.platform.forge.EventBuses;
-import ml.pkom.mcpitanlibarch.api.util.PlatformUtil;
-import ml.pkom.ygm76.YamatoGunMod;
+import net.pitan76.mcpitanlib.api.util.PlatformUtil;
+import net.pitan76.ygm76.YamatoGunMod;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 

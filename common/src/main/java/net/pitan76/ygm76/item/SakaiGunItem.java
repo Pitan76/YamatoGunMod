@@ -1,9 +1,9 @@
-package ml.pkom.ygm76.item;
+package net.pitan76.ygm76.item;
 
-import ml.pkom.mcpitanlibarch.api.entity.Player;
-import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
-import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
-import ml.pkom.ygm76.item.base.GunItem;
+import net.pitan76.mcpitanlib.api.entity.Player;
+import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.ygm76.item.base.GunItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;

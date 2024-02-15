@@ -1,14 +1,14 @@
-package ml.pkom.ygm76.entity;
+package net.pitan76.ygm76.entity;
 
-import ml.pkom.mcpitanlibarch.api.entity.EntityTypeBuilder;
-import ml.pkom.mcpitanlibarch.api.event.registry.RegistryEvent;
+import net.pitan76.mcpitanlib.api.entity.EntityTypeBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 
-import static ml.pkom.ygm76.YamatoGunMod.*;
+import static net.pitan76.ygm76.YamatoGunMod.*;
 
 public class YGEntityType {
-    public static RegistryEvent<EntityType<?>> BULLET_ENTITY;
+    public static RegistryResult<EntityType<?>> BULLET_ENTITY;
 
     public static void init() {
         BULLET_ENTITY = registry.registerEntity(id("bullet"), () -> EntityTypeBuilder.create(SpawnGroup.MISC, BulletEntity::new).build());

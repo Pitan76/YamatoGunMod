@@ -1,17 +1,17 @@
-package ml.pkom.ygm76.item;
+package net.pitan76.ygm76.item;
 
-import ml.pkom.mcpitanlibarch.api.event.registry.RegistryEvent;
-import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.minecraft.item.Item;
+import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 
-import static ml.pkom.ygm76.YamatoGunMod.*;
+import static net.pitan76.ygm76.YamatoGunMod.*;
 
 public class YGItems {
-    public static RegistryEvent<Item> BULLET_ITEM;
-    public static RegistryEvent<Item> YG1_ITEM;
-    public static RegistryEvent<Item> YG2_ITEM;
-    public static RegistryEvent<Item> YG3_ITEM;
-    public static RegistryEvent<Item> SAKAI_GUN_ITEM;
+    public static RegistryResult<Item> BULLET_ITEM;
+    public static RegistryResult<Item> YG1_ITEM;
+    public static RegistryResult<Item> YG2_ITEM;
+    public static RegistryResult<Item> YG3_ITEM;
+    public static RegistryResult<Item> SAKAI_GUN_ITEM;
 
     public static void init() {
         BULLET_ITEM = registry.registerItem(id("bullet"), () -> new BulletItem(new CompatibleItemSettings().addGroup(GUN_GROUP, id("bullet"))));

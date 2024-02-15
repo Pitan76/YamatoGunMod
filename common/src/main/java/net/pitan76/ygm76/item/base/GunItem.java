@@ -1,15 +1,15 @@
-package ml.pkom.ygm76.item.base;
+package net.pitan76.ygm76.item.base;
 
-import ml.pkom.mcpitanlibarch.api.entity.Player;
-import ml.pkom.mcpitanlibarch.api.event.item.ItemUseEvent;
-import ml.pkom.mcpitanlibarch.api.item.CompatibleItemSettings;
-import ml.pkom.mcpitanlibarch.api.item.ExtendItem;
-import ml.pkom.mcpitanlibarch.api.util.TimerUtil;
-import ml.pkom.mcpitanlibarch.api.util.WorldRandomUtil;
-import ml.pkom.mcpitanlibarch.api.util.WorldUtil;
-import ml.pkom.mcpitanlibarch.api.util.math.PosUtil;
-import ml.pkom.ygm76.entity.BulletEntity;
-import ml.pkom.ygm76.item.YGItems;
+import net.pitan76.mcpitanlib.api.entity.Player;
+import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
+import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.TimerUtil;
+import net.pitan76.mcpitanlib.api.util.WorldRandomUtil;
+import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.util.math.PosUtil;
+import net.pitan76.ygm76.entity.BulletEntity;
+import net.pitan76.ygm76.item.YGItems;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

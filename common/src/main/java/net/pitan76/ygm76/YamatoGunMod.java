@@ -1,12 +1,12 @@
-package ml.pkom.ygm76;
+package net.pitan76.ygm76;
 
-import ml.pkom.mcpitanlibarch.api.entity.Player;
-import ml.pkom.mcpitanlibarch.api.item.CreativeTabBuilder;
-import ml.pkom.mcpitanlibarch.api.network.ServerNetworking;
-import ml.pkom.mcpitanlibarch.api.registry.ArchRegistry;
-import ml.pkom.ygm76.entity.YGEntityType;
-import ml.pkom.ygm76.item.YGItems;
-import ml.pkom.ygm76.item.base.GunItem;
+import net.pitan76.mcpitanlib.api.entity.Player;
+import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
+import net.pitan76.mcpitanlib.api.network.ServerNetworking;
+import net.pitan76.mcpitanlib.api.registry.CompatRegistry;
+import net.pitan76.ygm76.entity.YGEntityType;
+import net.pitan76.ygm76.item.YGItems;
+import net.pitan76.ygm76.item.base.GunItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 public class YamatoGunMod {
     public static final String MOD_ID = "ygm76";
 
-    public static final ArchRegistry registry = ArchRegistry.createRegistry(MOD_ID);
+    public static final CompatRegistry registry = CompatRegistry.createRegistry(MOD_ID);
 
     public static final ItemGroup GUN_GROUP = CreativeTabBuilder.create(id("guns")).setIcon(() -> new ItemStack(YGItems.YG1_ITEM.get(), 1)).build();
 
