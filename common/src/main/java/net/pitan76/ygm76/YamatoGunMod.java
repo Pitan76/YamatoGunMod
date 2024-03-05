@@ -7,7 +7,6 @@ import net.pitan76.mcpitanlib.api.registry.CompatRegistry;
 import net.pitan76.ygm76.entity.YGEntityType;
 import net.pitan76.ygm76.item.YGItems;
 import net.pitan76.ygm76.item.base.GunItem;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -17,11 +16,11 @@ public class YamatoGunMod {
 
     public static final CompatRegistry registry = CompatRegistry.createRegistry(MOD_ID);
 
-    public static final ItemGroup GUN_GROUP = CreativeTabBuilder.create(id("guns")).setIcon(() -> new ItemStack(YGItems.YG1_ITEM.get(), 1)).build();
+    public static final CreativeTabBuilder GUN_GROUP = CreativeTabBuilder.create(id("guns")).setIcon(() -> new ItemStack(YGItems.YG1_ITEM.get(), 1));
 
     @SuppressWarnings("PatternVariableCanBeUsed")
     public static void init() {
-        registry.registerItemGroup(id("guns"), () -> GUN_GROUP);
+        registry.registerItemGroup(GUN_GROUP);
 
         YGEntityType.init();
         YGItems.init();
