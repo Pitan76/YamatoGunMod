@@ -18,7 +18,6 @@ public class YamatoGunMod {
 
     public static final CreativeTabBuilder GUN_GROUP = CreativeTabBuilder.create(id("guns")).setIcon(() -> new ItemStack(YGItems.YG1_ITEM.get(), 1));
 
-    @SuppressWarnings("PatternVariableCanBeUsed")
     public static void init() {
         registry.registerItemGroup(GUN_GROUP);
 
