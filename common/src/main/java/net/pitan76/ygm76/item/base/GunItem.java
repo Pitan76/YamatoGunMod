@@ -4,11 +4,13 @@ import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.CustomDataUtil;
 import net.pitan76.mcpitanlib.api.util.TimerUtil;
 import net.pitan76.mcpitanlib.api.util.WorldRandomUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import net.pitan76.ygm76.entity.BulletEntity;
+import net.pitan76.ygm76.fix.NbtFixer;
 import net.pitan76.ygm76.item.YGItems;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,16 +67,13 @@ public abstract class GunItem extends ExtendItem {
     }
 
     public static int getBulletCount(ItemStack stack) {
-        //noinspection DataFlowIssue
-        if (stack == null || !(stack.getItem() instanceof GunItem) || !stack.hasNbt() || !stack.getNbt().contains("bullet")) return 0;
-        return stack.getNbt().getInt("bullet");
+        if (stack == null || !(stack.getItem() instanceof GunItem) || !CustomDataUtil.hasNbt(stack) || !CustomDataUtil.contains(stack, "bullet")) return 0;
+        return CustomDataUtil.getNbt(stack).getInt("bullet");
     }
 
     public static void setBulletCount(ItemStack stack, int count) {
         if (stack == null || !(stack.getItem() instanceof GunItem)) return;
-        NbtCompound nbt = new NbtCompound();
-        nbt.putInt("bullet", count);
-        stack.setNbt(nbt);
+        CustomDataUtil.set(stack, "bullet", count);
     }
 
     public static void increaseBulletCount(ItemStack stack, int count) {
@@ -167,6 +166,7 @@ public abstract class GunItem extends ExtendItem {
 
     public void onLeftClick(Player $user, Hand hand) {
         ItemStack $stack = $user.getStackInHand(hand);
+        NbtFixer.fix($stack);
 
         if (!($stack.getItem().equals(this))) return;
 
@@ -179,9 +179,8 @@ public abstract class GunItem extends ExtendItem {
 
         if (!$world.isClient) {
             NbtCompound nbt = new NbtCompound();
-            if ($stack.hasNbt()) {
-
-                nbt = $stack.getNbt();
+            if (CustomDataUtil.hasNbt($stack)) {
+                nbt = CustomDataUtil.getNbt($stack);
                 if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return;
             }
 
@@ -189,14 +188,14 @@ public abstract class GunItem extends ExtendItem {
 
             int $c = $stack.getCount();
             $stack.setCount(0);
-            $stack.setNbt(nbt);
+            CustomDataUtil.setNbt($stack, nbt);
             $stack.setCount($c);
 
             TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
-                NbtCompound nbt2 = $stack.getNbt();
+                NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
                 nbt2.putBoolean("canUse", true);
                 $stack.setCount(0);
-                $stack.setNbt(nbt2);
+                CustomDataUtil.setNbt($stack, nbt2);
                 $stack.setCount($c);
                 return true;
             });
@@ -214,6 +213,7 @@ public abstract class GunItem extends ExtendItem {
         World $world = event.world;
 
         ItemStack $stack = $user.getStackInHand(event.hand);
+        NbtFixer.fix($stack);
         if (!isEnabledRightShoot()) return TypedActionResult.fail($stack);
 
         if (isBulletCountEmpty($stack)) {
@@ -223,8 +223,8 @@ public abstract class GunItem extends ExtendItem {
 
         if (!$world.isClient) {
             NbtCompound nbt = new NbtCompound();
-            if ($stack.hasNbt()) {
-                nbt = $stack.getNbt();
+            if (CustomDataUtil.hasNbt($stack)) {
+                nbt = CustomDataUtil.getNbt($stack);
                 if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return TypedActionResult.fail($stack);
             }
 
@@ -232,14 +232,14 @@ public abstract class GunItem extends ExtendItem {
 
             int $c = $stack.getCount();
             $stack.setCount(0);
-            $stack.setNbt(nbt);
+            CustomDataUtil.setNbt($stack, nbt);
             $stack.setCount($c);
 
             TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
-                NbtCompound nbt2 = $stack.getNbt();
+                NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
                 nbt2.putBoolean("canUse", true);
                 $stack.setCount(0);
-                $stack.setNbt(nbt2);
+                CustomDataUtil.setNbt($stack, nbt2);
                 $stack.setCount($c);
                 return true;
             });
@@ -285,6 +285,6 @@ public abstract class GunItem extends ExtendItem {
 
     @Override
     public boolean isItemBarVisible(ItemStack stack) {
-        return stack.hasNbt();
+        return CustomDataUtil.hasNbt(stack);
     }
 }
