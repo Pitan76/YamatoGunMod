@@ -1,13 +1,11 @@
 package net.pitan76.ygm76.item.base;
 
+import net.minecraft.util.ActionResult;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
-import net.pitan76.mcpitanlib.api.util.CustomDataUtil;
-import net.pitan76.mcpitanlib.api.util.TimerUtil;
-import net.pitan76.mcpitanlib.api.util.WorldRandomUtil;
-import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import net.pitan76.ygm76.entity.BulletEntity;
 import net.pitan76.ygm76.fix.NbtFixer;
@@ -27,7 +25,6 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public abstract class GunItem extends ExtendItem {
     public GunItem(CompatibleItemSettings settings) {
@@ -101,7 +98,7 @@ public abstract class GunItem extends ExtendItem {
     }
 
     public void playSoundWithTimer(Player player, SoundEvent event, float volume, float pitch, int ticks) {
-        if (player.getWorld().isClient) return;
+        if (player.isClient()) return;
         TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
             BlockPos $pos = player.getBlockPos();
             WorldUtil.playSound(player.getWorld(), null, PosUtil.flooredBlockPos($pos.getX(), $pos.getY(), $pos.getZ()), event, SoundCategory.NEUTRAL, volume, pitch);
@@ -144,7 +141,7 @@ public abstract class GunItem extends ExtendItem {
             for (ItemStack $invStack : $bulletList) {
                 if ($c == 0) break;
                 int $r = Math.min($c, $invStack.getCount());
-                $invStack.decrement($r);
+                ItemStackUtil.decrementCount($invStack, $r);
                 $c -= $r;
             }
 
@@ -166,7 +163,11 @@ public abstract class GunItem extends ExtendItem {
 
     public void onLeftClick(Player $user, Hand hand) {
         ItemStack $stack = $user.getStackInHand(hand);
-        NbtFixer.fix($stack);
+        /*
+        if (PlatformUtil.getGameVersion().contains()) {
+            NbtFixer.fix($stack);
+
+         */
 
         if (!($stack.getItem().equals(this))) return;
 
@@ -214,21 +215,22 @@ public abstract class GunItem extends ExtendItem {
 
         ItemStack $stack = $user.getStackInHand(event.hand);
         NbtFixer.fix($stack);
-        if (!isEnabledRightShoot()) return TypedActionResult.fail($stack);
+        if (!isEnabledRightShoot()) return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
 
         if (isBulletCountEmpty($stack)) {
             reload($stack, $user);
-            return TypedActionResult.fail($stack);
+            return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
         }
 
         if (!$world.isClient) {
             NbtCompound nbt = new NbtCompound();
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
-                if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return TypedActionResult.fail($stack);
+                if (NbtUtil.has(nbt, "canUse") && !NbtUtil.get(nbt, "canUse", Boolean.class))
+                    return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
             }
 
-            nbt.putBoolean("canUse", false);
+            NbtUtil.set(nbt, "canUse", false);
 
             int $c = $stack.getCount();
             $stack.setCount(0);
@@ -237,7 +239,7 @@ public abstract class GunItem extends ExtendItem {
 
             TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
                 NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
-                nbt2.putBoolean("canUse", true);
+                NbtUtil.set(nbt2, "canUse", true);
                 $stack.setCount(0);
                 CustomDataUtil.setNbt($stack, nbt2);
                 $stack.setCount($c);
@@ -251,7 +253,7 @@ public abstract class GunItem extends ExtendItem {
 
         $user.incrementStat(Stats.USED, this);
 
-        return TypedActionResult.success($stack, false);
+        return ActionResultUtil.typedActionResult(ActionResult.SUCCESS, $stack, false);
     }
 
     public boolean isEnabledRightShoot() {
@@ -264,7 +266,7 @@ public abstract class GunItem extends ExtendItem {
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
         bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         decreaseBulletCount($stack);
-        $world.spawnEntity(bulletEntity);
+        WorldUtil.spawnEntity($world, bulletEntity);
     }
 
     public void shootRight(Player $user, ItemStack $stack) {
@@ -275,7 +277,7 @@ public abstract class GunItem extends ExtendItem {
         bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         bulletEntity.setAddedDamage(getRightShootDamage());
         decreaseBulletCount($stack);
-        $world.spawnEntity(bulletEntity);
+        WorldUtil.spawnEntity($world, bulletEntity);
     }
 
     @Override

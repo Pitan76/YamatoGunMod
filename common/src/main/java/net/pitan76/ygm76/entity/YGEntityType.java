@@ -11,6 +11,6 @@ public class YGEntityType {
     public static RegistryResult<EntityType<?>> BULLET_ENTITY;
 
     public static void init() {
-        BULLET_ENTITY = registry.registerEntity(id("bullet"), () -> EntityTypeBuilder.create(SpawnGroup.MISC, BulletEntity::new).build());
+        BULLET_ENTITY = INSTANCE.registry.registerEntity(INSTANCE.compatId("bullet"), () -> EntityTypeBuilder.create(SpawnGroup.MISC, BulletEntity::new).build());
     }
 }

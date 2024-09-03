@@ -11,7 +11,7 @@ public class YamatoGunModForge {
     public YamatoGunModForge() {
         // Submit our event bus to let architectury register our content on the right time
         EventBuses.registerModEventBus(YamatoGunMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-        YamatoGunMod.init();
+        new YamatoGunMod();
 
         if (PlatformUtil.isClient()) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(YamatoGunForgeClientMod::renderInit);
