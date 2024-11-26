@@ -6,6 +6,9 @@ import net.pitan76.mcpitanlib.api.event.item.ItemBarVisibleArgs;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundEvent;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import net.pitan76.ygm76.entity.BulletEntity;
@@ -15,9 +18,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -97,27 +97,27 @@ public abstract class GunItem extends CompatItem  {
         return YGItems.BULLET_ITEM.get();
     }
 
-    public void playSoundWithTimer(Player player, SoundEvent event, float volume, float pitch, int ticks) {
+    public void playSoundWithTimer(Player player, CompatSoundEvent event, float volume, float pitch, int ticks) {
         if (player.isClient()) return;
         TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
             BlockPos $pos = player.getBlockPos();
-            WorldUtil.playSound(player.getWorld(), null, PosUtil.flooredBlockPos($pos.getX(), $pos.getY(), $pos.getZ()), event, SoundCategory.NEUTRAL, volume, pitch);
+            WorldUtil.playSound(player.getWorld(), null, PosUtil.flooredBlockPos($pos.getX(), $pos.getY(), $pos.getZ()), event, CompatSoundCategory.NEUTRAL, volume, pitch);
             return true;
         });
     }
 
     public void playSoundOnReload(Player player) {
-        playSoundWithTimer(player, SoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 4);
-        playSoundWithTimer(player, SoundEvents.BLOCK_IRON_DOOR_OPEN, 1, 2, 6);
-        playSoundWithTimer(player, SoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 16);
-        playSoundWithTimer(player, SoundEvents.ENTITY_PLAYER_HURT, 1, 0, 17);
-        playSoundWithTimer(player, SoundEvents.BLOCK_IRON_DOOR_CLOSE, 1, 2, getReloadTick());
+        playSoundWithTimer(player, CompatSoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 4);
+        playSoundWithTimer(player, CompatSoundEvents.BLOCK_IRON_DOOR_OPEN, 1, 2, 6);
+        playSoundWithTimer(player, CompatSoundEvents.ITEM_FLINTANDSTEEL_USE, 1, 1, 16);
+        playSoundWithTimer(player, CompatSoundEvents.ENTITY_PLAYER_HURT, 1, 0, 17);
+        playSoundWithTimer(player, CompatSoundEvents.BLOCK_IRON_DOOR_CLOSE, 1, 2, getReloadTick());
     }
 
     public void reload(ItemStack stack, Player player) {
         if (getMaxBulletCount() == getBulletCount(stack)) return;
 
-        if (player.getInventory().contains(new ItemStack(getBulletItem()))) {
+        if (player.getInventory().contains(ItemStackUtil.create(getBulletItem()))) {
             playSoundOnReload(player);
 
             player.getItemCooldown().set(this, getReloadTick());
@@ -152,13 +152,13 @@ public abstract class GunItem extends CompatItem  {
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        WorldUtil.playSound(player.getWorld(), null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void playSoundOnRightShoot(Player player) {
         if (player.isClient()) return;
         BlockPos $pos = player.getBlockPos();
-        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        WorldUtil.playSound(player.getWorld(), null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void onLeftClick(Player $user, Hand hand) {
@@ -179,7 +179,7 @@ public abstract class GunItem extends CompatItem  {
         }
 
         if (!$world.isClient) {
-            NbtCompound nbt = new NbtCompound();
+            NbtCompound nbt = NbtUtil.create();
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
                 if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return;
@@ -223,26 +223,26 @@ public abstract class GunItem extends CompatItem  {
         }
 
         if (!$world.isClient) {
-            NbtCompound nbt = new NbtCompound();
+            NbtCompound nbt = NbtUtil.create();
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
-                if (NbtUtil.has(nbt, "canUse") && !NbtUtil.get(nbt, "canUse", Boolean.class))
+                if (NbtUtil.has(nbt, "canUse") && !NbtUtil.getBoolean(nbt, "canUse"))
                     return e.fail();
             }
 
             NbtUtil.set(nbt, "canUse", false);
 
             int $c = $stack.getCount();
-            $stack.setCount(0);
+            ItemStackUtil.setCount($stack, 0);
             CustomDataUtil.setNbt($stack, nbt);
-            $stack.setCount($c);
+            ItemStackUtil.setCount($stack, $c);
 
             TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
                 NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
                 NbtUtil.set(nbt2, "canUse", true);
-                $stack.setCount(0);
+                ItemStackUtil.setCount($stack, 0);
                 CustomDataUtil.setNbt($stack, nbt2);
-                $stack.setCount($c);
+                ItemStackUtil.setCount($stack, $c);
                 return true;
             });
 

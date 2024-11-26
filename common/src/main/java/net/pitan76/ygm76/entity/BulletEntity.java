@@ -15,7 +15,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.World;
 
 public class BulletEntity extends CompatThrownItemEntity {
@@ -36,7 +35,7 @@ public class BulletEntity extends CompatThrownItemEntity {
 
     private ParticleEffect getParticleParameters() {
         ItemStack itemStack = this.callGetItem();
-        return ParticleEffectUtil.itemStack.create(ParticleTypes.ITEM, ItemStackUtil.isEmpty(itemStack) ? ItemStackUtil.create(getDefaultItemOverride()) : itemStack);
+        return ParticleEffectUtil.itemStack.createTypedItem(ItemStackUtil.isEmpty(itemStack) ? ItemStackUtil.create(getDefaultItemOverride()) : itemStack);
     }
 
     @Override
