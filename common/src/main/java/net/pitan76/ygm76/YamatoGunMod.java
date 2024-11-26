@@ -4,7 +4,8 @@ import net.pitan76.mcpitanlib.api.CommonModInitializer;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
 import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
-import net.pitan76.mcpitanlib.api.network.ServerNetworking;
+import net.pitan76.mcpitanlib.api.network.v2.ServerNetworking;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.ygm76.entity.YGEntityType;
 import net.pitan76.ygm76.item.YGItems;
@@ -29,28 +30,33 @@ public class YamatoGunMod extends CommonModInitializer {
         YGEntityType.init();
         YGItems.init();
 
-        ServerNetworking.registerReceiver(id("left_click_on_holding_gun"), ((server, p, buf) -> {
-            Player player = new Player(p);
-            boolean isMainHand = PacketByteUtil.readBoolean(buf);
+        ServerNetworking.registerReceiver(_id("left_click_on_holding_gun"), ((e) -> {
+            Player player = e.getPlayer();
+            boolean isMainHand = PacketByteUtil.readBoolean(e.getBuf());
             Hand hand = isMainHand ? Hand.MAIN_HAND : Hand.OFF_HAND;
 
             ItemStack stack = player.getStackInHand(hand);
             if (stack.getItem() instanceof GunItem) {
-                if (p.getItemCooldownManager().isCoolingDown(stack.getItem())) return;
+                if (player.getItemCooldown().isCoolingDown(stack.getItem())) return;
                 GunItem item = (GunItem) stack.getItem();
                 item.onLeftClick(player, hand);
             }
         }));
 
-        ServerNetworking.registerReceiver(id("reload_gun"), ((server, p, buf) -> {
-            Player player = new Player(p);
-            ItemStack stack = player.getStackInHand(p.getActiveHand());
+        ServerNetworking.registerReceiver(_id("reload_gun"), ((e) -> {
+            Player player = e.getPlayer();
+            if (!player.getCurrentHandItem().isPresent()) return;
+            ItemStack stack = player.getCurrentHandItem().get();
             if (stack.getItem() instanceof GunItem) {
-                if (p.getItemCooldownManager().isCoolingDown(stack.getItem())) return;
+                if (player.getItemCooldown().isCoolingDown(stack.getItem())) return;
                 GunItem item = (GunItem) stack.getItem();
                 item.reload(stack, player);
             }
         }));
+    }
+
+    public static CompatIdentifier _id(String path) {
+        return new CompatIdentifier(MOD_ID, path);
     }
 
     @Override

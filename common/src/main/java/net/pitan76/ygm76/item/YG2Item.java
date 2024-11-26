@@ -1,6 +1,6 @@
 package net.pitan76.ygm76.item;
 
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 
 public class YG2Item extends YG1Item {
     public YG2Item(CompatibleItemSettings settings) {

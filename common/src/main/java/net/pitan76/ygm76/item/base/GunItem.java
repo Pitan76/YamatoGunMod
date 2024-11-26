@@ -1,10 +1,11 @@
 package net.pitan76.ygm76.item.base;
 
-import net.minecraft.util.ActionResult;
 import net.pitan76.mcpitanlib.api.entity.Player;
+import net.pitan76.mcpitanlib.api.event.item.ItemBarStepArgs;
+import net.pitan76.mcpitanlib.api.event.item.ItemBarVisibleArgs;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import net.pitan76.ygm76.entity.BulletEntity;
@@ -19,14 +20,13 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GunItem extends ExtendItem {
+public abstract class GunItem extends CompatItem  {
     public GunItem(CompatibleItemSettings settings) {
         super(settings);
     }
@@ -120,7 +120,7 @@ public abstract class GunItem extends ExtendItem {
         if (player.getInventory().contains(new ItemStack(getBulletItem()))) {
             playSoundOnReload(player);
 
-            player.itemCooldown.set(this, getReloadTick());
+            player.getItemCooldown().set(this, getReloadTick());
             int $bulletCount = 0;
             List<ItemStack> $bulletList = new ArrayList<>();
 
@@ -209,17 +209,17 @@ public abstract class GunItem extends ExtendItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        Player $user = event.user;
-        World $world = event.world;
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        Player $user = e.user;
+        World $world = e.world;
 
-        ItemStack $stack = $user.getStackInHand(event.hand);
+        ItemStack $stack = $user.getStackInHand(e.hand);
         NbtFixer.fix($stack);
-        if (!isEnabledRightShoot()) return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
+        if (!isEnabledRightShoot()) return e.fail();
 
         if (isBulletCountEmpty($stack)) {
             reload($stack, $user);
-            return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
+            return e.fail();
         }
 
         if (!$world.isClient) {
@@ -227,7 +227,7 @@ public abstract class GunItem extends ExtendItem {
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
                 if (NbtUtil.has(nbt, "canUse") && !NbtUtil.get(nbt, "canUse", Boolean.class))
-                    return ActionResultUtil.typedActionResult(ActionResult.FAIL, $stack);
+                    return e.fail();
             }
 
             NbtUtil.set(nbt, "canUse", false);
@@ -253,7 +253,7 @@ public abstract class GunItem extends ExtendItem {
 
         $user.incrementStat(Stats.USED, this);
 
-        return ActionResultUtil.typedActionResult(ActionResult.SUCCESS, $stack, false);
+        return e.success();
     }
 
     public boolean isEnabledRightShoot() {
@@ -281,12 +281,12 @@ public abstract class GunItem extends ExtendItem {
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
-        return Math.round((float) getBulletCount(stack) * 13.0F / (float) getMaxBulletCount());
+    public int getItemBarStep(ItemBarStepArgs args) {
+        return Math.round((float) getBulletCount(args.getStack()) * 13.0F / (float) getMaxBulletCount());
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
-        return CustomDataUtil.hasNbt(stack);
+    public boolean isItemBarVisible(ItemBarVisibleArgs args) {
+        return CustomDataUtil.hasNbt(args.getStack());
     }
 }
