@@ -264,6 +264,7 @@ public abstract class GunItem extends CompatItem  {
         World $world = $user.getWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
+        bulletEntity.callSetItem(ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
         bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         decreaseBulletCount($stack);
         WorldUtil.spawnEntity($world, bulletEntity);
@@ -274,6 +275,7 @@ public abstract class GunItem extends CompatItem  {
         World $world = $user.getWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
+        bulletEntity.callSetItem(ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
         bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         bulletEntity.setAddedDamage(getRightShootDamage());
         decreaseBulletCount($stack);
