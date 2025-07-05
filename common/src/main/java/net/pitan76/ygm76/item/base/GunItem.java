@@ -10,7 +10,7 @@ import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundEvent;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.*;
-import net.pitan76.mcpitanlib.api.util.math.PosUtil;
+import net.pitan76.mcpitanlib.midohra.util.math.BlockPos;
 import net.pitan76.ygm76.entity.BulletEntity;
 import net.pitan76.ygm76.fix.NbtFixer;
 import net.pitan76.ygm76.item.YGItems;
@@ -20,13 +20,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GunItem extends CompatItem  {
+public abstract class GunItem extends CompatItem {
     public GunItem(CompatibleItemSettings settings) {
         super(settings);
     }
@@ -65,7 +64,7 @@ public abstract class GunItem extends CompatItem  {
 
     public static int getBulletCount(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof GunItem) || !CustomDataUtil.hasNbt(stack) || !CustomDataUtil.contains(stack, "bullet")) return 0;
-        return CustomDataUtil.getNbt(stack).getInt("bullet");
+        return NbtUtil.getInt(CustomDataUtil.getNbt(stack), "bullet");
     }
 
     public static void setBulletCount(ItemStack stack, int count) {
@@ -100,8 +99,8 @@ public abstract class GunItem extends CompatItem  {
     public void playSoundWithTimer(Player player, CompatSoundEvent event, float volume, float pitch, int ticks) {
         if (player.isClient()) return;
         TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
-            BlockPos $pos = player.getBlockPos();
-            WorldUtil.playSound(player.getWorld(), null, PosUtil.flooredBlockPos($pos.getX(), $pos.getY(), $pos.getZ()), event, CompatSoundCategory.NEUTRAL, volume, pitch);
+            BlockPos $pos = BlockPos.of(player.getBlockPos());
+            player.getMidohraWorld().playSound($pos, event, CompatSoundCategory.NEUTRAL, volume, pitch);
             return true;
         });
     }
@@ -125,12 +124,12 @@ public abstract class GunItem extends CompatItem  {
             List<ItemStack> $bulletList = new ArrayList<>();
 
             List<ItemStack> $list = new ArrayList<>(player.getMain());
-            $list.add(player.getStackInHand(Hand.MAIN_HAND));
-            $list.add(player.getStackInHand(Hand.OFF_HAND));
+            $list.add(player.getMainHandStack());
+            $list.add(player.getOffHandStack());
 
             for (ItemStack $invStack : $list) {
-                if ($invStack.getItem().equals(getBulletItem())) {
-                    $bulletCount += $invStack.getCount();
+                if (ItemStackUtil.getItem($invStack).equals(getBulletItem())) {
+                    $bulletCount += ItemStackUtil.getCount($invStack);
                     $bulletList.add($invStack);
                 }
             }
@@ -151,14 +150,14 @@ public abstract class GunItem extends CompatItem  {
 
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
-        BlockPos $pos = player.getBlockPos();
-        WorldUtil.playSound(player.getWorld(), null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        BlockPos $pos = BlockPos.of(player.getBlockPos());
+        player.getMidohraWorld().playSound($pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void playSoundOnRightShoot(Player player) {
         if (player.isClient()) return;
-        BlockPos $pos = player.getBlockPos();
-        WorldUtil.playSound(player.getWorld(), null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
+        BlockPos $pos = BlockPos.of(player.getBlockPos());
+        player.getMidohraWorld().playSound($pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void onLeftClick(Player $user, Hand hand) {
@@ -169,7 +168,7 @@ public abstract class GunItem extends CompatItem  {
 
          */
 
-        if (!($stack.getItem().equals(this))) return;
+        if (!(ItemStackUtil.getItem($stack).equals(this))) return;
 
         World $world = $user.getWorld();
 
@@ -178,26 +177,26 @@ public abstract class GunItem extends CompatItem  {
             return;
         }
 
-        if (!$world.isClient) {
+        if (!$user.isClient()) {
             NbtCompound nbt = NbtUtil.create();
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
-                if (nbt.contains("canUse") && !nbt.getBoolean("canUse")) return;
+                if (NbtUtil.has(nbt, "canUse") && !NbtUtil.getBoolean(nbt, "canUse")) return;
             }
 
-            nbt.putBoolean("canUse", false);
+            NbtUtil.putBoolean(nbt, "canUse", false);
 
-            int $c = $stack.getCount();
-            $stack.setCount(0);
+            int $c = ItemStackUtil.getCount($stack);
+            ItemStackUtil.setCount($stack, 0);
             CustomDataUtil.setNbt($stack, nbt);
-            $stack.setCount($c);
+            ItemStackUtil.setCount($stack, $c);
 
             TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
                 NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
-                nbt2.putBoolean("canUse", true);
-                $stack.setCount(0);
+                NbtUtil.putBoolean(nbt2, "canUse", true);
+                ItemStackUtil.setCount($stack, 0);
                 CustomDataUtil.setNbt($stack, nbt2);
-                $stack.setCount($c);
+                ItemStackUtil.setCount($stack, $c);
                 return true;
             });
 
@@ -232,7 +231,7 @@ public abstract class GunItem extends CompatItem  {
 
             NbtUtil.set(nbt, "canUse", false);
 
-            int $c = $stack.getCount();
+            int $c = ItemStackUtil.getCount($stack);
             ItemStackUtil.setCount($stack, 0);
             CustomDataUtil.setNbt($stack, nbt);
             ItemStackUtil.setCount($stack, $c);
