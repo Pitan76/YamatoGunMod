@@ -3,7 +3,7 @@
   "id": "ygm76",
   "version": "${version}",
   "name": "${mod_name}",
-  "description": "",
+  "description": "Add simple guns. You can kill mobs more easily.",
   "authors": [
     "Pitan76"
   ],
@@ -23,13 +23,9 @@
       "net.pitan76.ygm76.fabric.YamatoGunModClientFabric"
     ]
   },
-  "mixins": [
-    "ygm76.mixins.json",
-    "ygm76-common.mixins.json"
-  ],
   "depends": {
     "fabricloader": "*",
     "minecraft": ">=1.16",
-    "mcpitanlib": ">2.1.0"
+    "mcpitanlib": ">3.0.0"
   }
 }
