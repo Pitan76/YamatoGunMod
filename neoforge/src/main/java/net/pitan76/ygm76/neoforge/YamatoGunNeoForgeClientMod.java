@@ -1,13 +1,13 @@
-package net.pitan76.ygm76.forge;
+package net.pitan76.ygm76.neoforge;
 
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.pitan76.ygm76.YamatoGunClientMod;
 import net.pitan76.ygm76.entity.YGEntityType;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-public class YamatoGunForgeClientMod {
+public class YamatoGunNeoForgeClientMod {
     public static void clientInit(FMLClientSetupEvent event) {
         YamatoGunClientMod.init();
     }
