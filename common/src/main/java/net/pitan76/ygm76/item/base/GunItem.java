@@ -96,11 +96,11 @@ public abstract class GunItem extends CompatItem {
         return YGItems.BULLET_ITEM.get();
     }
 
-    public void playSoundWithTimer(Player player, CompatSoundEvent event, float volume, float pitch, int ticks) {
+    public void playSoundWithTimer(Player player, CompatSoundEvent soundEvent, float volume, float pitch, int ticks) {
         if (player.isClient()) return;
         TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
             BlockPos $pos = BlockPos.of(player.getBlockPos());
-            player.getMidohraWorld().playSound($pos, event, CompatSoundCategory.NEUTRAL, volume, pitch);
+            player.getMidohraWorld().playSound($pos, soundEvent, CompatSoundCategory.NEUTRAL, volume, pitch);
             return true;
         });
     }
@@ -221,7 +221,7 @@ public abstract class GunItem extends CompatItem {
             return e.fail();
         }
 
-        if (!$world.isClient) {
+        if (!e.isClient()) {
             NbtCompound nbt = NbtUtil.create();
             if (CustomDataUtil.hasNbt($stack)) {
                 nbt = CustomDataUtil.getNbt($stack);
