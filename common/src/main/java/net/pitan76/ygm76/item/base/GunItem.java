@@ -10,6 +10,7 @@ import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundEvent;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.*;
+import net.pitan76.mcpitanlib.api.util.entity.ThrownItemEntityUtil;
 import net.pitan76.mcpitanlib.midohra.util.math.BlockPos;
 import net.pitan76.ygm76.entity.BulletEntity;
 import net.pitan76.ygm76.fix.NbtFixer;
@@ -63,8 +64,8 @@ public abstract class GunItem extends CompatItem {
     }
 
     public static int getBulletCount(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof GunItem) || !CustomDataUtil.hasNbt(stack) || !CustomDataUtil.contains(stack, "bullet")) return 0;
-        return NbtUtil.getInt(CustomDataUtil.getNbt(stack), "bullet");
+        if (stack == null || !(stack.getItem() instanceof GunItem)) return 0;
+        return NbtUtil.getIntOrDefault(CustomDataUtil.getOrCreateNbt(stack), "bullet", 0);
     }
 
     public static void setBulletCount(ItemStack stack, int count) {
@@ -263,8 +264,8 @@ public abstract class GunItem extends CompatItem {
         World $world = $user.getWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
-        bulletEntity.callSetItem(ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
-        bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
+        ThrownItemEntityUtil.setItem(bulletEntity, ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
+        ThrownItemEntityUtil.setVelocity(bulletEntity, $user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         decreaseBulletCount($stack);
         WorldUtil.spawnEntity($world, bulletEntity);
     }
@@ -274,8 +275,8 @@ public abstract class GunItem extends CompatItem {
         World $world = $user.getWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
-        bulletEntity.callSetItem(ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
-        bulletEntity.setVelocity($user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
+        ThrownItemEntityUtil.setItem(bulletEntity, ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
+        ThrownItemEntityUtil.setVelocity(bulletEntity, $user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         bulletEntity.setAddedDamage(getRightShootDamage());
         decreaseBulletCount($stack);
         WorldUtil.spawnEntity($world, bulletEntity);
