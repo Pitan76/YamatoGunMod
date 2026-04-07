@@ -7,6 +7,7 @@ import net.pitan76.mcpitanlib.api.util.EntityUtil;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.api.util.ParticleEffectUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.midohra.world.World;
 import net.pitan76.ygm76.item.YGItems;
 import net.pitan76.ygm76.item.base.GunItem;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.world.World;
 
 public class BulletEntity extends CompatThrownItemEntity {
 
@@ -23,14 +23,18 @@ public class BulletEntity extends CompatThrownItemEntity {
     public float addedDamage = 0f;
     public LivingEntity owner;
 
-    public BulletEntity(World world, LivingEntity owner, GunItem item) {
+    public BulletEntity(net.minecraft.world.World world, LivingEntity owner, GunItem item) {
         super((EntityType<? extends CompatThrownItemEntity>) YGEntityType.BULLET_ENTITY.get(), owner, world);
         this.item = item;
         this.owner = owner;
     }
 
-    public BulletEntity(EntityType<?> entityType, World world) {
+    public BulletEntity(EntityType<?> entityType, net.minecraft.world.World world) {
         super((EntityType<? extends CompatThrownItemEntity>) entityType, world);
+    }
+
+    public BulletEntity(World world, LivingEntity owner, GunItem item) {
+        this(world.toMinecraft(), owner, item);
     }
 
     private ParticleEffect getParticleParameters() {
@@ -70,9 +74,9 @@ public class BulletEntity extends CompatThrownItemEntity {
     @Override
     public void onCollision(CollisionEvent e) {
         super.onCollision(e);
-        World world = EntityUtil.getWorld(this);
-        if (world != null && !WorldUtil.isClient(world)) {
-            WorldUtil.sendEntityStatus(world, this, (byte)3);
+        World world = World.of(EntityUtil.getWorld(this));
+        if (world.toMinecraft() != null && !world.isClient()) {
+            WorldUtil.sendEntityStatus(world.toMinecraft(), this, (byte)3);
             try {
                 EntityUtil.discard(this);
             } catch (ArrayIndexOutOfBoundsException ignore) {}

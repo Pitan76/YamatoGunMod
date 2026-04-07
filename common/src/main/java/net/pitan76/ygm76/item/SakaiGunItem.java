@@ -2,11 +2,11 @@ package net.pitan76.ygm76.item;
 
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
+import net.pitan76.mcpitanlib.midohra.util.math.BlockPos;
+import net.pitan76.mcpitanlib.midohra.world.World;
 import net.pitan76.ygm76.item.base.GunItem;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 
 public class SakaiGunItem extends GunItem {
     public SakaiGunItem(CompatibleItemSettings settings) {
@@ -16,10 +16,13 @@ public class SakaiGunItem extends GunItem {
     @Override
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
-        BlockPos $pos = player.getBlockPos();
-        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 0.5f);
-        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.NEUTRAL, 0.5F, 2f);
-        WorldUtil.playSound(player.getWorld(), null, $pos, SoundEvents.BLOCK_ANVIL_FALL, SoundCategory.NEUTRAL, 0.5F, 2f);
+
+        World $world = player.getMidohraWorld();
+        BlockPos $pos = player.getBlockPosM();
+
+        $world.playSound(null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.5f);
+        $world.playSound(null, $pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 2f);
+        $world.playSound(null, $pos, CompatSoundEvents.BLOCK_ANVIL_FALL, CompatSoundCategory.NEUTRAL, 0.5F, 2f);
     }
 
     @Override

@@ -12,19 +12,20 @@ import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ThrownItemEntityUtil;
 import net.pitan76.mcpitanlib.midohra.util.math.BlockPos;
+import net.pitan76.mcpitanlib.midohra.world.ServerWorld;
+import net.pitan76.mcpitanlib.midohra.world.World;
 import net.pitan76.ygm76.entity.BulletEntity;
 import net.pitan76.ygm76.fix.NbtFixer;
 import net.pitan76.ygm76.item.YGItems;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class GunItem extends CompatItem {
     public GunItem(CompatibleItemSettings settings) {
@@ -99,8 +100,12 @@ public abstract class GunItem extends CompatItem {
 
     public void playSoundWithTimer(Player player, CompatSoundEvent soundEvent, float volume, float pitch, int ticks) {
         if (player.isClient()) return;
-        TimerUtil.addTimer((ServerWorld) player.getWorld(), ticks, () -> {
-            BlockPos $pos = BlockPos.of(player.getBlockPos());
+        World $world = player.getMidohraWorld();
+        Optional<ServerWorld> serverWorld = $world.toServerWorld();
+        if (!serverWorld.isPresent()) return;
+
+        TimerUtil.addTimer(serverWorld.get().toMinecraft(), ticks, () -> {
+            BlockPos $pos = player.getBlockPosM();
             player.getMidohraWorld().playSound($pos, soundEvent, CompatSoundCategory.NEUTRAL, volume, pitch);
             return true;
         });
@@ -117,6 +122,7 @@ public abstract class GunItem extends CompatItem {
     public void reload(ItemStack stack, Player player) {
         if (getMaxBulletCount() == getBulletCount(stack)) return;
 
+        // TODO: add getInventory.contains to CompatPlayerInventory (MCPitanLib)
         if (player.getInventory().contains(ItemStackUtil.create(getBulletItem()))) {
             playSoundOnReload(player);
 
@@ -151,13 +157,13 @@ public abstract class GunItem extends CompatItem {
 
     public void playSoundOnShoot(Player player) {
         if (player.isClient()) return;
-        BlockPos $pos = BlockPos.of(player.getBlockPos());
+        BlockPos $pos = player.getBlockPosM();
         player.getMidohraWorld().playSound($pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
     public void playSoundOnRightShoot(Player player) {
         if (player.isClient()) return;
-        BlockPos $pos = BlockPos.of(player.getBlockPos());
+        BlockPos $pos = player.getBlockPosM();
         player.getMidohraWorld().playSound($pos, CompatSoundEvents.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, CompatSoundCategory.NEUTRAL, 0.5F, 0.3F / (WorldRandomUtil.nextFloat(player.getWorld()) * 0.4F + 0.8F));
     }
 
@@ -171,7 +177,7 @@ public abstract class GunItem extends CompatItem {
 
         if (!(ItemStackUtil.getItem($stack).equals(this))) return;
 
-        World $world = $user.getWorld();
+        World $world = $user.getMidohraWorld();
 
         if (isBulletCountEmpty($stack)) {
             reload($stack, $user);
@@ -192,7 +198,10 @@ public abstract class GunItem extends CompatItem {
             CustomDataUtil.setNbt($stack, nbt);
             ItemStackUtil.setCount($stack, $c);
 
-            TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
+            Optional<ServerWorld> serverWorld = $world.toServerWorld();
+            if (!serverWorld.isPresent()) return;
+
+            TimerUtil.addTimer(serverWorld.get().toMinecraft(), getShootTick(), () -> {
                 NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
                 NbtUtil.putBoolean(nbt2, "canUse", true);
                 ItemStackUtil.setCount($stack, 0);
@@ -211,7 +220,7 @@ public abstract class GunItem extends CompatItem {
     @Override
     public StackActionResult onRightClick(ItemUseEvent e) {
         Player $user = e.user;
-        World $world = e.world;
+        World $world = e.getMidohraWorld();
 
         ItemStack $stack = $user.getStackInHand(e.hand);
         NbtFixer.fix($stack);
@@ -237,7 +246,10 @@ public abstract class GunItem extends CompatItem {
             CustomDataUtil.setNbt($stack, nbt);
             ItemStackUtil.setCount($stack, $c);
 
-            TimerUtil.addTimer(((ServerWorld) $world), getShootTick(), () -> {
+            Optional<ServerWorld> serverWorld = $world.toServerWorld();
+            if (!serverWorld.isPresent()) return e.fail();
+
+            TimerUtil.addTimer(serverWorld.get().toMinecraft(), getShootTick(), () -> {
                 NbtCompound nbt2 = CustomDataUtil.getNbt($stack);
                 NbtUtil.set(nbt2, "canUse", true);
                 ItemStackUtil.setCount($stack, 0);
@@ -261,25 +273,25 @@ public abstract class GunItem extends CompatItem {
     }
 
     public void shoot(Player $user, ItemStack $stack) {
-        World $world = $user.getWorld();
+        World $world = $user.getMidohraWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
         ThrownItemEntityUtil.setItem(bulletEntity, ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
         ThrownItemEntityUtil.setVelocity(bulletEntity, $user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         decreaseBulletCount($stack);
-        WorldUtil.spawnEntity($world, bulletEntity);
+        $world.spawnEntity(bulletEntity);
     }
 
     public void shootRight(Player $user, ItemStack $stack) {
         if (!isEnabledRightShoot()) return;
-        World $world = $user.getWorld();
+        World $world = $user.getMidohraWorld();
 
         BulletEntity bulletEntity = new BulletEntity($world, $user.getEntity(), this);
         ThrownItemEntityUtil.setItem(bulletEntity, ItemStackUtil.create(YGItems.BULLET_ITEM.get()));
         ThrownItemEntityUtil.setVelocity(bulletEntity, $user.getEntity(), $user.getPitch(), $user.getYaw(), getShootRoll(), getShootSpeed(), getShootDivergence());
         bulletEntity.setAddedDamage(getRightShootDamage());
         decreaseBulletCount($stack);
-        WorldUtil.spawnEntity($world, bulletEntity);
+        $world.spawnEntity(bulletEntity);
     }
 
     @Override
